@@ -1,0 +1,27 @@
+{
+  "export_value": {
+    "2025": 1115,
+    "2026": 1075
+  },
+  "market_share": {
+    "export": 85,
+    "domestic": 15
+  },
+  "ranking": 6,
+  "production_2026": 270000,
+  "markets": [
+    {"name": "Japan", "type": "Processed / Frozen"},
+    {"name": "China", "type": "Fresh & Frozen"},
+    {"name": "USA", "type": "Processed Products"}
+  ],
+  "risks": [
+    "Disease outbreaks (EMS)",
+    "Flooding and extreme weather",
+    "High feed costs"
+  ],
+  "trends": [
+    "Rising domestic consumption",
+    "Shift to Black Tiger Shrimp",
+    "Demand for ASC / BAP certification"
+  ]
+}

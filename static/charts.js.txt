@@ -1,0 +1,14 @@
+function renderExportChart(v2025, v2026) {
+    const ctx = document.getElementById('exportChart');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['2025', '2026'],
+            datasets: [{
+                label: 'Export Value (USD Million)',
+                data: [v2025, v2026],
+                backgroundColor: '#66bb6a'
+            }]
+        }
+    });
+}
