@@ -1,15 +1,16 @@
-from flask import Flask, render_template, request
-import json
+import os
+from flask import Flask
 
 app = Flask(__name__)
 
-with open("data/shrimp_2026.json", encoding="utf-8") as f:
-    data = json.load(f)
-
 @app.route("/")
-def index():
-    lang = request.args.get("lang", "th")
-    return render_template("index.html", data=data, lang=lang)
+def home():
+    return "✅ Thai Shrimp Industry 2026 is running"
+
+@app.route("/healthz")
+def healthz():
+    return {"status": "ok"}
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
