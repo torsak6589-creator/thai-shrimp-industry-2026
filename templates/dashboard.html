@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thai Shrimp Industry 2026 – Dashboard</title>
+</head>
+<body>
+    <h1>🦐 Thai Shrimp Industry Dashboard ({{ data.year }})</h1>
+
+    <ul>
+        <li><strong>Export Volume:</strong> {{ data.export_volume_tons }} tons</li>
+        <li><strong>Export Value:</strong> USD {{ "{:,}".format(data.export_value_usd) }}</li>
+        <li><strong>Top Markets:</strong>
+            <ul>
+                {% for m in data.top_markets %}
+                <li>{{ m }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+
+    <p>Status: ✅ Running</p>
+</body>
+</html>
