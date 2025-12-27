@@ -1,23 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-    <title>Thai Shrimp Industry 2026 – Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Thai Shrimp Industry 2026 – Executive Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
-    <h1>🦐 Thai Shrimp Industry Dashboard ({{ data.year }})</h1>
+  <h1>🦐 Thai Shrimp Industry 2026</h1>
+  <div class="subtitle">
+    Executive Dashboard – ภาพรวมเพื่อการตัดสินใจระดับผู้บริหาร
+  </div>
 
-    <ul>
-        <li><strong>Export Volume:</strong> {{ data.export_volume_tons }} tons</li>
-        <li><strong>Export Value:</strong> USD {{ "{:,}".format(data.export_value_usd) }}</li>
-        <li><strong>Top Markets:</strong>
-            <ul>
-                {% for m in data.top_markets %}
-                <li>{{ m }}</li>
-                {% endfor %}
-            </ul>
-        </li>
-    </ul>
-
-    <p>Status: ✅ Running</p>
+  <!-- 👉 เนื้อหา Dashboard ทั้งชุดของคุณ วางตรงนี้ -->
 </body>
 </html>
