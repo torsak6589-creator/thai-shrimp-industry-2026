@@ -211,3 +211,22 @@
   </div>
 </body>
 </html>
+<div class="card">
+  <h2>7️⃣ Daily Shrimp Price (Google Sheet)</h2>
+
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Size</th>
+      <th>Price</th>
+    </tr>
+
+    {% for p in prices %}
+    <tr>
+      <td>{{ p.date }}</td>
+      <td>{{ p.size }}</td>
+      <td>{{ p.price }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
