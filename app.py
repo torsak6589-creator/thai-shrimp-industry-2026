@@ -4,7 +4,8 @@ app = Flask(__name__)
 import requests, json
 
 def get_price_from_gsheet():
-    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT6x4gRN0oCi3gUzWQsAFl4BdefiaRg2EsSahflCpfCT7l4Ahokeq5vV2PCEtMJvrilljmVdVQOMLZO/gviz/tq?tqx=out:json&gid=1530942221"
+    url = "https://docs.google.com/spreadsheets/d/1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es/gviz/tq?tqx=out:json&gid=1530942221
+"
 
     r = requests.get(url, timeout=15)
     text = r.text
