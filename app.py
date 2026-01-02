@@ -20,3 +20,10 @@ def get_price_from_gsheet():
         })
 
     return prices
+@app.route("/dashboard")
+def dashboard():
+    prices = get_price_from_gsheet()   # STEP 2: ดึงข้อมูล
+    return render_template(
+        "dashboard.html",
+        prices=prices                  # STEP 2: ส่งเข้า Dashboard
+    )
