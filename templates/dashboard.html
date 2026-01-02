@@ -1,194 +1,38 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <title>Thai Shrimp Industry 2026 – Executive Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 24px;
-      color: #1f2937;
-    }
-    .container {
-      max-width: 1200px;
-      margin: auto;
-    }
-    h1 {
-      font-size: 28px;
-      margin-bottom: 4px;
-    }
-    h2 {
-      font-size: 18px;
-      margin: 0 0 12px 0;
-      color: #0f766e;
-    }
-    .subtitle {
-      color: #6b7280;
-      margin-bottom: 24px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-    }
-    .card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 16px 18px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-    }
-    .highlight {
-      background: #ecfeff;
-      border-left: 5px solid #06b6d4;
-    }
-    ul {
-      padding-left: 18px;
-      margin: 0;
-    }
-    li {
-      margin-bottom: 6px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-    th, td {
-      border-bottom: 1px solid #e5e7eb;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background: #f9fafb;
-    }
-    .footer {
-      margin-top: 24px;
-      padding: 12px;
-      background: #0f766e;
-      color: #ffffff;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Thai Shrimp Industry 2026 – Executive Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
-  <div class="container">
 
-    <h1>🦐 Thai Shrimp Industry 2026</h1>
-    <div class="subtitle">
-      Raw Purchasing – ภาพรวมเพื่อการตัดสินใจระดับผู้บริหาร
-    </div>
+<h1>📊 Thai Shrimp Industry 2026</h1>
+<p class="subtitle">Raw Material Purchasing – Executive View</p>
 
-    <div class="grid">
+<section class="card">
+<h2>ราคากุ้งล่าสุดจากตลาด</h2>
 
-      <!-- 1 Executive Snapshot -->
-      <div class="card highlight">
-        <h2>1️⃣ Executive Snapshot</h2>
-        <ul>
-          <li>Supply เปราะบาง แต่ราคาไม่พุ่งแรง โดยเฉพาะกุ้งขนาดใหญ่</li>
-          <li>ความเสี่ยงหลักจาก อากาศ / โรค / ต้นทุนสะสม</li>
-          <li>ต้องอ่าน “สัญญาณล่วงหน้า” มากกว่าข่าวรายวัน</li>
-        </ul>
-      </div>
+<table>
+    <tr>
+        <th>วันที่</th>
+        <th>ขนาด</th>
+        <th>ราคา (บาท/กก.)</th>
+    </tr>
+    {% for p in prices %}
+    <tr>
+        <td>{{ p.date }}</td>
+        <td>{{ p.size }}</td>
+        <td>{{ p.price }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</section>
 
-      <!-- 2 Market -->
-      <div class="card">
-        <h2>2️⃣ Market & Raw Material</h2>
-        <ul>
-          <li>กุ้งกลาง–ใหญ่ผันผวน คาดนิ่งหลังมีนาคม</li>
-          <li>Availability ขึ้นกับพื้นที่เลี้ยง</li>
-          <li>อินเดีย / เอกวาดอร์ เริ่มมีแผนนำเข้า</li>
-        </ul>
-        <strong>Implication:</strong> เน้น “จังหวะซื้อ”
-      </div>
+<footer>
+Single Source of Truth – สำหรับผู้บริหารฝ่ายจัดซื้อ ปี 2026
+</footer>
 
-      <!-- 3 Farming -->
-      <div class="card">
-        <h2>3️⃣ Farming & Weather Risk</h2>
-        <ul>
-          <li>ต้องอ่านอากาศร่วมกับสุขภาพฟาร์ม</li>
-          <li>ความเสี่ยงกระจุกฝั่งอ่าวไทย</li>
-          <li>โรค + ความเครียดสะสมเป็นตัวเร่ง</li>
-        </ul>
-      </div>
-
-      <!-- 4 Cost -->
-      <div class="card">
-        <h2>4️⃣ Cost & Margin</h2>
-        <ul>
-          <li>Feed / Energy สูงเชิงโครงสร้าง</li>
-          <li>ราคากุ้ง ≠ กำไร</li>
-          <li>ซื้อผิดจังหวะ = Margin หาย</li>
-        </ul>
-      </div>
-
-      <!-- 5 Scenario -->
-      <div class="card">
-        <h2>5️⃣ Scenario 2026</h2>
-        <table>
-          <tr>
-            <th>Scenario</th>
-            <th>เงื่อนไข</th>
-            <th>แนวทาง</th>
-          </tr>
-          <tr>
-            <td>Best</td>
-            <td>Supply ฟื้น</td>
-            <td>Lock วัตถุดิบ</td>
-          </tr>
-          <tr>
-            <td>Base</td>
-            <td>ผันผวน</td>
-            <td>ซื้อแบ่งงวด</td>
-          </tr>
-          <tr>
-            <td>Worst</td>
-            <td>โรค + อากาศ</td>
-            <td>ชะลอ</td>
-          </tr>
-        </table>
-      </div>
-
-      <!-- 6 Takeaways -->
-      <div class="card highlight">
-        <h2>6️⃣ Strategic Takeaways</h2>
-        <ul>
-          <li>ไม่ดูราคาอย่างเดียว</li>
-          <li>แยกระยะสั้น–กลาง–กลยุทธ์</li>
-          <li>Dashboard กลางทั้งองค์กร</li>
-        </ul>
-      </div>
-
-      <!-- 7 Daily Price -->
-      <div class="card">
-        <h2>7️⃣ Daily Shrimp Price (Google Sheet)</h2>
-        <table>
-          <tr>
-            <th>Date</th>
-            <th>Size</th>
-            <th>Price (THB/kg)</th>
-          </tr>
-          {% for p in prices %}
-          <tr>
-            <td>{{ p.date }}</td>
-            <td>{{ p.size }}</td>
-            <td>{{ p.price }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
-
-    </div>
-
-    <div class="footer">
-      Single Source of Truth สำหรับผู้บริหาร – ปี 2026
-    </div>
-
-  </div>
 </body>
+</html>
 </html>
