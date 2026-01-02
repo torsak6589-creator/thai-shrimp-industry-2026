@@ -230,3 +230,22 @@
     {% endfor %}
   </table>
 </div>
+<div class="card">
+  <h3>📈 Shrimp Price (Last 7 Records)</h3>
+
+  <table style="width:100%; border-collapse: collapse;">
+    <tr>
+      <th>Date</th>
+      <th>Size</th>
+      <th>Price (THB/kg)</th>
+    </tr>
+
+    {% for p in prices %}
+    <tr>
+      <td>{{ p.date }}</td>
+      <td>{{ p.size }}</td>
+      <td>{{ p.price }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
