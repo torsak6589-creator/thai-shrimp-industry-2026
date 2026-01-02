@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify
-import requests, json
+import requests, json, os
 
 app = Flask(__name__)
 
@@ -29,34 +29,13 @@ def home():
 
 @app.route("/dashboard")
 def dashboard():
-    prices = get_price_from_gsheet()
-    return render_template("dashboard.html", prices=prices)
+    return render_template("dashboard.html", prices=get_price_from_gsheet())
 
 @app.route("/api/prices")
 def api_prices():
     return jsonify(get_price_from_gsheet())
 
+# 👇 สำคัญมาก
 if __name__ == "__main__":
-    app.run()
-
-@app.route("/")
-def home():
-    return "Thai Shrimp Industry 2026 API is running"
-
-
-@app.route("/dashboard")
-def dashboard():
-    prices = get_price_from_gsheet()
-    return render_template("dashboard.html", prices=prices)
-
-
-@app.route("/api/prices")
-def api_prices():
-    return jsonify(get_price_from_gsheet())
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
-
-
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
