@@ -6,29 +6,29 @@ app = Flask(__name__)
 GSHEET_ID = "1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es"
 GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json"
 
-
 def get_price_from_gsheet():
-    r = requests.get(GSHEET_URL, timeout=15)
+    r = requests.get(GSHEET_URL)
     text = r.text
-
-    json_data = text[text.find("{"):text.rfind("}") + 1]
-    data = json.loads(json_data)
+    json_str = text[text.find("{"):text.rfind("}")+1]
+    data = json.loads(json_str)
 
     prices = []
-    for row in data["table"]["rows"][-10:]:
-        c = row["c"]
-        if c and c[2]:
+    rows = data["table"]["rows"]
+
+    for r in rows[-10:]:
+        if r["c"] and r["c"][2]:
             prices.append({
-                "date": c[0]["v"],
-                "size": c[1]["v"],
-                "price": c[2]["v"]
+                "date": r["c"][0]["v"],
+                "size": r["c"][1]["v"],
+                "price": r["c"][2]["v"]
             })
+
     return prices
 
 
 @app.route("/")
 def home():
-    return dashboard()
+    return "Thai Shrimp Industry 2026 API is running"
 
 
 @app.route("/dashboard")
@@ -44,3 +44,6 @@ def api_prices():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
