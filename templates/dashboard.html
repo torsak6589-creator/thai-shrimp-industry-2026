@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Thai Shrimp Industry 2026 – Executive Dashboard</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Thai Shrimp Industry 2026</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #0d6efd; color: white; }
+    </style>
 </head>
 <body>
 
-<h1>📊 Thai Shrimp Industry 2026</h1>
-<p class="subtitle">Raw Material Purchasing – Executive View</p>
-
-<section class="card">
-<h2>ราคากุ้งล่าสุดจากตลาด</h2>
+<h2>📊 Shrimp Price Dashboard</h2>
 
 <table>
     <tr>
-        <th>วันที่</th>
-        <th>ขนาด</th>
-        <th>ราคา (บาท/กก.)</th>
+        <th>Date</th>
+        <th>Size</th>
+        <th>Price</th>
     </tr>
     {% for p in prices %}
     <tr>
@@ -27,12 +28,7 @@
     </tr>
     {% endfor %}
 </table>
-</section>
-
-<footer>
-Single Source of Truth – สำหรับผู้บริหารฝ่ายจัดซื้อ ปี 2026
-</footer>
 
 </body>
 </html>
-</html>
+
