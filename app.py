@@ -2,11 +2,8 @@ from flask import Flask, render_template, redirect, url_for
 
 app = Flask(__name__)
 import requests, json
-
 def get_price_from_gsheet():
-    url = "https://docs.google.com/spreadsheets/d/1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es/gviz/tq?tqx=out:json&gid=1530942221
-"
-
+    url = "https://docs.google.com/spreadsheets/d/1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es/gviz/tq?tqx=out:json&gid=1530942221"
     r = requests.get(url, timeout=15)
     text = r.text
     json_data = text[text.find("{"):text.rfind("}")+1]
@@ -14,7 +11,6 @@ def get_price_from_gsheet():
 
     rows = data["table"]["rows"]
     prices = []
-
     for row in rows[-7:]:
         c = row["c"]
         prices.append({
@@ -24,13 +20,3 @@ def get_price_from_gsheet():
         })
 
     return prices
-
-@app.route("/")
-def home():
-    return redirect(url_for("dashboard"))
-
-@app.route("/dashboard")
-def dashboard():
-    prices = get_price_from_gsheet()
-    return render_template("dashboard.html", prices=prices)
-
