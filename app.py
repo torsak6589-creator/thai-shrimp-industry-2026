@@ -4,7 +4,8 @@ import requests, json, os
 app = Flask(__name__)
 
 GSHEET_ID = "1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es"
-GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid=0"
+GSHEET_GID = "0"
+GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid={GSHEET_GID}"
 
 def get_price_from_gsheet():
     r = requests.get(GSHEET_URL, timeout=15)
@@ -15,19 +16,21 @@ def get_price_from_gsheet():
     prices = []
     for row in data["table"]["rows"][-10:]:
         c = row["c"]
-        if c and c[0] and c[1] and c[2]:
-            prices.append({
-                "date": c[0]["v"],
-                "size": c[1]["v"],
-                "price": c[2]["v"]
-            })
+
+        if not c or not c[0] or not c[2] or not c[3]:
+            continue
+
+        prices.append({
+            "date": c[0]["v"],                      # Date
+            "market": c[1]["v"] if c[1] else "",    # Market
+            "size": c[2]["v"],                      # Size
+            "price": c[3]["v"],                     # Price
+            "type": c[4]["v"] if len(c) > 4 and c[4] else ""
+        })
+
     return prices
 
 @app.route("/")
-def home():
-    return "Thai Shrimp Industry 2026 API is running"
-
-@app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html", prices=get_price_from_gsheet())
 
@@ -35,7 +38,6 @@ def dashboard():
 def api_prices():
     return jsonify(get_price_from_gsheet())
 
-# 👇 สำคัญมาก
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
