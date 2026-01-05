@@ -4,7 +4,7 @@ import requests, json, os
 app = Flask(__name__)
 
 GSHEET_ID = "1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es"
-GSHEET_GID = "1530942221"  # ← แก้ให้ตรง
+GSHEET_GID = "0"  # ← แก้ให้ตรง
 GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid={GSHEET_GID}"
 
 def get_price_from_gsheet():
