@@ -13,17 +13,21 @@ def get_price_from_gsheet():
     json_str = text[text.find("{"):text.rfind("}")+1]
     data = json.loads(json_str)
 
-   prices = []
+    prices = []
     for row in data["table"]["rows"][-10:]:
         c = row["c"]
-        if c and c[0] and c[2] and c[3]:
-            prices.append({
-                "date": c[0]["v"],     # Date
-                "market": c[1]["v"],   # Market
-                "size": c[2]["v"],     # Size
-                "price": c[3]["v"],    # Price
-                "type": c[4]["v"] if c[4] else ""
-            })
+
+        if not c or not c[0] or not c[1] or not c[2] or not c[3]:
+            continue
+
+        prices.append({
+            "date": c[0]["v"],          # Date
+            "market": c[1]["v"],        # Songkhla
+            "size": c[2]["v"],          # 60
+            "price": c[3]["v"],         # 160
+            "type": c[4]["v"] if len(c) > 4 and c[4] else ""
+        })
+
     return prices
 
 @app.route("/")
