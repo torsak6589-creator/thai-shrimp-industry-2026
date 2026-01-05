@@ -1,34 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Thai Shrimp Industry 2026</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        th { background: #0d6efd; color: white; }
-    </style>
-</head>
-<body>
+from flask import Flask, render_template, jsonify
+import requests, json, os
 
-<h2>📊 Shrimp Price Dashboard</h2>
+app = Flask(__name__)
 
-<table>
-    <tr>
-        <th>Date</th>
-        <th>Size</th>
-        <th>Price</th>
-    </tr>
-    {% for p in prices %}
-    <tr>
-        <td>{{ p.date }}</td>
-        <td>{{ p.size }}</td>
-        <td>{{ p.price }}</td>
-    </tr>
-    {% endfor %}
-</table>
+GSHEET_ID = "1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es"
+GSHEET_GID = "1530942221"  # ← แก้ให้ตรง
+GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid={GSHEET_GID}"
 
-</body>
-</html>
+def get_price_from_gsheet():
+    r = requests.get(GSHEET_URL, timeout=15)
+    text = r.text
+    json_str = text[text.find("{"):text.rfind("}")+1]
+    data = json.loads(json_str)
+
+    prices = []
+    for row in data["table"]["rows"][-10:]:
+        c = row["c"]
+        if c and c[0] and c[1] and c[2]:
+            prices.append({
+                "date": c[0]["v"],
+                "size": c[1]["v"],
+                "price": c[2]["v"]
+            })
+    return prices
+
+@app.route("/")
+def dashboard():
+    return render_template("dashboard.html", prices=get_price_from_gsheet())
+
+@app.route("/api/prices")
+def api_prices():
+    return jsonify(get_price_from_gsheet())
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
 
