@@ -13,10 +13,9 @@ def get_price_from_gsheet():
     data = json.loads(json_str)
 
     prices = []
-
     rows = data["table"]["rows"]
 
-    # 👇 ข้าม header แถวแรก
+    # ข้าม header แถวแรก
     for row in rows[1:]:
         c = row["c"]
 
@@ -24,10 +23,10 @@ def get_price_from_gsheet():
             continue
 
         prices.append({
-            "date": c[0]["v"],        # Date
-            "market": c[1]["v"],      # Songkhla
-            "size": c[2]["v"],        # 60
-            "price": c[3]["v"],       # 160
+            "date": c[0]["v"],      # Date
+            "market": c[1]["v"],    # Songkhla
+            "size": c[2]["v"],      # 60
+            "price": c[3]["v"],     # 160
             "type": c[4]["v"] if len(c) > 4 and c[4] else ""
         })
 
