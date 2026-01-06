@@ -13,21 +13,26 @@ def get_price_from_gsheet():
     data = json.loads(json_str)
 
     prices = []
-    for row in data["table"]["rows"][-10:]:
+
+    rows = data["table"]["rows"]
+
+    # 👇 ข้าม header แถวแรก
+    for row in rows[1:]:
         c = row["c"]
 
         if not c or not c[0] or not c[1] or not c[2] or not c[3]:
             continue
 
         prices.append({
-            "date": c[0]["v"],          # Date
-            "market": c[1]["v"],        # Songkhla
-            "size": c[2]["v"],          # 60
-            "price": c[3]["v"],         # 160
+            "date": c[0]["v"],        # Date
+            "market": c[1]["v"],      # Songkhla
+            "size": c[2]["v"],        # 60
+            "price": c[3]["v"],       # 160
             "type": c[4]["v"] if len(c) > 4 and c[4] else ""
         })
 
     return prices
+
         
 @app.route("/")
 def dashboard():
