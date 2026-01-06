@@ -17,19 +17,19 @@ def get_price_from_gsheet():
     for row in data["table"]["rows"][-10:]:
         c = row["c"]
 
-        if not c or not c[0] or not c[2] or not c[3]:
+        if not c or not c[0] or not c[1] or not c[2] or not c[3]:
             continue
 
         prices.append({
-            "date": c[0]["v"],                      # Date
-            "market": c[1]["v"] if c[1] else "",    # Market
-            "size": c[2]["v"],                      # Size
-            "price": c[3]["v"],                     # Price
+            "date": c[0]["v"],          # Date
+            "market": c[1]["v"],        # Songkhla
+            "size": c[2]["v"],          # 60
+            "price": c[3]["v"],         # 160
             "type": c[4]["v"] if len(c) > 4 and c[4] else ""
         })
 
     return prices
-
+        
 @app.route("/")
 def dashboard():
     return render_template("dashboard.html", prices=get_price_from_gsheet())
