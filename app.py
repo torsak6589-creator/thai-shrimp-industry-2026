@@ -6,7 +6,6 @@ app = Flask(__name__)
 GSHEET_ID = "1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es"
 GSHEET_GID = "0"
 GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid={GSHEET_GID}"
-
 def get_price_from_gsheet():
     r = requests.get(GSHEET_URL, timeout=15)
     text = r.text
