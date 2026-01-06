@@ -16,28 +16,20 @@
 <h1>📊 ราคากุ้งรายวัน (Google Sheet)</h1>
 
 <table>
-    <thead>
-        <tr>
-            <th>วันที่</th>
-            <th>ตลาด</th>
-            <th>ไซส์</th>
-            <th>ราคา</th>
-            <th>ประเภท</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for p in prices %}
-        <tr>
-            <td>{{ p.date }}</td>
-            <td>{{ p.market }}</td>
-            <td>{{ p.size }}</td>
-            <td>{{ p.price }}</td>
-            <td>{{ p.type }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+  <tr>
+    <th>Date</th>
+    <th>Market</th>
+    <th>Size</th>
+    <th>Price (THB/kg)</th>
+  </tr>
 
-</body>
-</html>
+  {% for p in prices %}
+  <tr>
+    <td>{{ p.date }}</td>
+    <td>{{ p.market }}</td>
+    <td>{{ p.size }}</td>
+    <td>{{ p.price }}</td>
+  </tr>
+  {% endfor %}
+</table>
 
