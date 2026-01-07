@@ -85,6 +85,36 @@
         </div>
     </div>
 </div>
+def compare_last_14_days(prices):
+    """
+    เปรียบเทียบ 7 วันล่าสุด vs 7 วันก่อนหน้า
+    prices ต้องเรียงตามวันที่เก่า → ใหม่
+    """
+    if len(prices) < 14:
+        return {}
+
+    last_7 = prices[-7:]
+    prev_7 = prices[-14:-7]
+
+    avg_last_7 = sum(p["price"] for p in last_7) / len(last_7)
+    avg_prev_7 = sum(p["price"] for p in prev_7) / len(prev_7)
+
+    diff = avg_last_7 - avg_prev_7
+    pct = (diff / avg_prev_7) * 100 if avg_prev_7 != 0 else 0
+
+    trend = "→"
+    if diff > 0:
+        trend = "↑"
+    elif diff < 0:
+        trend = "↓"
+
+    return {
+        "avg_last_7": round(avg_last_7, 2),
+        "avg_prev_7": round(avg_prev_7, 2),
+        "diff": round(diff, 2),
+        "pct": round(pct, 1),
+        "trend": trend
+    }
 
 <!-- ===== Market Insight ===== -->
 <div class="insight">
