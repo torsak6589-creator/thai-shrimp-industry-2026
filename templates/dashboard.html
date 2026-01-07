@@ -182,6 +182,53 @@ def compare_last_14_days(prices):
         {{ overview.trend }}
       </span>
     </div>
+<section class="executive" style="margin-top:40px;">
+  <h2>📆 7-Day Comparison</h2>
+  <p style="color:#555;">เปรียบเทียบราคาเฉลี่ย 7 วันล่าสุด vs 7 วันก่อนหน้า</p>
+
+  {% if compare_7d %}
+  <div class="cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:20px;">
+    
+    <div class="card">
+      <strong>7 วันล่าสุด</strong><br>
+      {{ compare_7d.avg_last_7 }} บาท/กก.
+    </div>
+
+    <div class="card">
+      <strong>7 วันก่อนหน้า</strong><br>
+      {{ compare_7d.avg_prev_7 }} บาท/กก.
+    </div>
+
+    <div class="card">
+      <strong>เปลี่ยนแปลง</strong><br>
+      {{ compare_7d.diff }} บาท
+    </div>
+
+    <div class="card">
+      <strong>Trend</strong><br>
+      {{ compare_7d.trend }} ({{ compare_7d.pct }}%)
+    </div>
+
+  </div>
+
+  <div class="insight" style="margin-top:20px;">
+    <h3>📌 Executive Interpretation</h3>
+    <ul>
+      <li>ราคาเฉลี่ย 7 วันล่าสุด {{ compare_7d.trend }}
+          {{ compare_7d.pct }}%</li>
+      {% if compare_7d.trend == "↑" %}
+        <li>ต้นทุนมีแนวโน้มเพิ่ม — ควรระวังการซื้อสะสม</li>
+      {% elif compare_7d.trend == "↓" %}
+        <li>ราคาผ่อนคลาย — เป็นจังหวะพิจารณาเข้าซื้อ</li>
+      {% else %}
+        <li>ราคาแกว่งตัว — แนะนำซื้อแบบกระจายความเสี่ยง</li>
+      {% endif %}
+    </ul>
+  </div>
+  {% else %}
+    <p>ข้อมูลยังไม่ครบ 14 วัน</p>
+  {% endif %}
+</section>
 
   </div>
 
