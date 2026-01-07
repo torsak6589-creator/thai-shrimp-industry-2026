@@ -76,6 +76,16 @@ def market_overview(prices):
 @app.route("/")
 def dashboard():
     return render_template("dashboard.html", prices=get_price_from_gsheet())
+@app.route("/")
+def dashboard():
+    prices = get_price_from_gsheet()
+    overview = market_overview(prices)
+
+    return render_template(
+        "dashboard.html",
+        prices=prices,
+        overview=overview
+    )
 
 @app.route("/api/prices")
 def api_prices():
