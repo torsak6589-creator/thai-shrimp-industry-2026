@@ -123,6 +123,60 @@
         {% endfor %}
     </tbody>
 </table>
+<hr style="margin:40px 0;">
+
+<section class="executive">
+  <h2>🧠 Executive Market Overview</h2>
+  <p style="color:#555;">สรุปสถานการณ์กุ้งสำหรับผู้บริหาร (1 นาทีเข้าใจ)</p>
+
+  <div class="cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:20px;">
+    
+    <div class="card">
+      <strong>Market</strong><br>
+      {{ overview.market }}
+    </div>
+
+    <div class="card">
+      <strong>Main Size</strong><br>
+      {{ overview.size }}
+    </div>
+
+    <div class="card">
+      <strong>Avg Price</strong><br>
+      {{ overview.avg_price }} บาท/กก.
+    </div>
+
+    <div class="card">
+      <strong>Trend</strong><br>
+      <span style="font-size:22px;">
+        {{ overview.trend }}
+      </span>
+    </div>
+
+  </div>
+
+  <div class="insight" style="margin-top:30px;background:#f9fafb;padding:16px;border-left:5px solid #0f766e;">
+    <h3>📌 Executive Insight</h3>
+    <ul>
+      <li>ราคาเฉลี่ยอยู่ที่ <strong>{{ overview.avg_price }}</strong> บาท/กก.</li>
+      <li>แนวโน้มราคา <strong>{{ overview.trend }}</strong> เมื่อเทียบงวดก่อน</li>
+      <li>ตลาดหลักยังเป็น <strong>{{ overview.market }}</strong></li>
+      <li>เหมาะใช้ประกอบการตัดสินใจจัดซื้อระยะสั้น</li>
+    </ul>
+  </div>
+
+  <div class="decision" style="margin-top:20px;padding:16px;background:#ecfeff;">
+    <h3>🚦 Decision Signal</h3>
+    {% if overview.trend == "↑" %}
+      <p style="color:#dc2626;"><strong>🔴 ราคาเร่งตัว — ระวังการซื้อสะสม</strong></p>
+    {% elif overview.trend == "↓" %}
+      <p style="color:#16a34a;"><strong>🟢 ราคาอ่อนตัว — มีโอกาสเข้าซื้อ</strong></p>
+    {% else %}
+      <p style="color:#ca8a04;"><strong>🟡 ราคาแกว่งตัว — ซื้อแบบระมัดระวัง</strong></p>
+    {% endif %}
+  </div>
+
+</section>
 
 </body>
 </html>
