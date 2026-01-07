@@ -6,6 +6,8 @@ app = Flask(__name__)
 GSHEET_ID = "1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es"
 GSHEET_GID = "0"
 GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid={GSHEET_GID}"
+import datetime
+
 def get_price_from_gsheet():
     r = requests.get(GSHEET_URL, timeout=15)
     text = r.text
@@ -13,35 +15,25 @@ def get_price_from_gsheet():
     data = json.loads(json_str)
 
     prices = []
-    rows = data["table"]["rows"]
 
-    # เริ่มจากแถวที่ 1 → ข้าม header
-    for row in rows[1:]:
+    for row in data["table"]["rows"]:
         c = row["c"]
-
-        if not c or len(c) < 4:
+        if not c or len(c) < 4 or not c[0] or not c[3]:
             continue
 
-        try:
-            date = c[0]["v"]
-            market = c[1]["v"] if c[1] else "-"
-            size = c[2]["v"] if c[2] else "-"
-            price = c[3]["v"]
-        except:
-            continue
+        # ---- แปลงวันที่ ----
+        raw_date = c[0]["v"]  # Date(2026,0,2)
+        y, m, d = map(int, raw_date[5:-1].split(","))
+        date = datetime.date(y, m + 1, d).strftime("%d%m%Y")
 
         prices.append({
             "date": date,
-            "market": market,
-            "size": size,
-            "price": price
+            "market": c[1]["v"] if c[1] else "-",
+            "size": int(c[2]["v"]) if c[2] else "-",
+            "price": float(c[3]["v"])
         })
 
     return prices
-
-
-
-
         
 @app.route("/")
 def dashboard():
