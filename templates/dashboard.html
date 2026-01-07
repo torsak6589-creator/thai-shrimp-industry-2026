@@ -1,27 +1,103 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <title>Thai Shrimp Industry 2026</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fafafa;
+            padding: 20px;
+        }
+
+        h2, h3 {
+            margin-top: 24px;
+        }
+
         table {
             border-collapse: collapse;
             width: 100%;
+            margin-top: 12px;
+            background: #fff;
         }
+
         th, td {
             border: 1px solid #ccc;
             padding: 8px;
             text-align: center;
         }
+
         th {
             background: #f2f2f2;
         }
+
+        .overview .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .insight {
+            background: #eef7ff;
+            padding: 12px 16px;
+            border-left: 4px solid #3b82f6;
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
 
-<h2>📊 ราคากุ้งรายวัน (Google Sheet)</h2>
+<h2>🦐 Thai Shrimp Industry 2026</h2>
+
+<!-- ===== Market Overview ===== -->
+<div class="overview">
+    <h3>Market Overview</h3>
+
+    <div class="cards">
+        <div class="card">
+            <strong>Market</strong><br>
+            {{ overview.market }}
+        </div>
+
+        <div class="card">
+            <strong>Size</strong><br>
+            {{ overview.size }}
+        </div>
+
+        <div class="card">
+            <strong>Avg Price</strong><br>
+            {{ overview.avg_price }} บาท/กก.
+        </div>
+
+        <div class="card">
+            <strong>Trend</strong><br>
+            {{ overview.trend }}
+        </div>
+    </div>
+</div>
+
+<!-- ===== Market Insight ===== -->
+<div class="insight">
+    <h3>Market Insight</h3>
+    <ul>
+        <li>ราคากุ้งเฉลี่ยอยู่ที่ {{ overview.avg_price }} บาท/กก.</li>
+        <li>แนวโน้มราคา {{ overview.trend }} เมื่อเทียบวันก่อนหน้า</li>
+        <li>ใช้ประกอบการตัดสินใจจัดซื้อระยะสั้น</li>
+    </ul>
+</div>
+
+<!-- ===== Price Table ===== -->
+<h3>📊 ราคากุ้งรายวัน (Google Sheet)</h3>
 
 <table>
     <thead>
@@ -47,40 +123,7 @@
         {% endfor %}
     </tbody>
 </table>
-<div class="insight">
-  <h3>Market Insight</h3>
-  <ul>
-    <li>ราคากุ้งเฉลี่ยอยู่ที่ {{ overview.avg_price }} บาท/กก.</li>
-    <li>แนวโน้มราคา {{ overview.trend }} เมื่อเทียบวันก่อนหน้า</li>
-    <li>เหมาะใช้ประกอบการตัดสินใจจัดซื้อระยะสั้น</li>
-  </ul>
-</div>
 
 </body>
 </html>
-<div class="overview">
-  <h2>Market Overview</h2>
-
-  <div class="cards">
-    <div class="card">
-      <strong>Market</strong><br>
-      {{ overview.market }}
-    </div>
-
-    <div class="card">
-      <strong>Size</strong><br>
-      {{ overview.size }}
-    </div>
-
-    <div class="card">
-      <strong>Avg Price</strong><br>
-      {{ overview.avg_price }} บาท/กก.
-    </div>
-
-    <div class="card">
-      <strong>Trend</strong><br>
-      {{ overview.trend }}
-    </div>
-  </div>
-</div>
 
