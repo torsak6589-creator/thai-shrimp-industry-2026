@@ -8,6 +8,21 @@ GSHEET_GID = "0"
 GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid={GSHEET_GID}"
 import datetime
 
+from datetime import datetime
+
+def format_gsheet_date(v):
+    """
+    แปลง Date(2026,0,2) → 02-01-2026
+    """
+    if isinstance(v, str) and v.startswith("Date"):
+        parts = v.replace("Date(", "").replace(")", "").split(",")
+        year = int(parts[0])
+        month = int(parts[1]) + 1   # Google Sheet เดือนเริ่มที่ 0
+        day = int(parts[2])
+        return f"{day:02d}-{month:02d}-{year}"
+    return v
+
+
 def get_price_from_gsheet():
     r = requests.get(GSHEET_URL, timeout=15)
     text = r.text
@@ -18,22 +33,24 @@ def get_price_from_gsheet():
 
     for row in data["table"]["rows"]:
         c = row["c"]
-        if not c or len(c) < 4 or not c[0] or not c[3]:
+        if not c or len(c) < 4:
             continue
 
-        # ---- แปลงวันที่ ----
-        raw_date = c[0]["v"]  # Date(2026,0,2)
-        y, m, d = map(int, raw_date[5:-1].split(","))
-        date = datetime.date(y, m + 1, d).strftime("%d%m%Y")
+        date_raw = c[0]["v"] if c[0] else None
+        price = c[3]["v"] if c[3] else None
+
+        if date_raw is None or price is None:
+            continue
 
         prices.append({
-            "date": date,
+            "date": format_gsheet_date(date_raw),   # ✅ แปลงตรงนี้
             "market": c[1]["v"] if c[1] else "-",
-            "size": int(c[2]["v"]) if c[2] else "-",
-            "price": float(c[3]["v"])
+            "size": int(c[2]["v"]) if c[2] else "-",  # ไม่มีทศนิยม
+            "price": price
         })
 
     return prices
+
         
 @app.route("/")
 def dashboard():
