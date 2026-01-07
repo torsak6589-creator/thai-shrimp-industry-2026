@@ -50,6 +50,27 @@ def get_price_from_gsheet():
         })
 
     return prices
+def market_overview(prices):
+    if not prices:
+        return {}
+
+    latest = prices[-1]
+    avg_price = sum(p["price"] for p in prices) / len(prices)
+
+    trend = "→"
+    if len(prices) >= 2:
+        if prices[-1]["price"] > prices[-2]["price"]:
+            trend = "↑"
+        elif prices[-1]["price"] < prices[-2]["price"]:
+            trend = "↓"
+
+    return {
+        "date": latest["date"],
+        "market": latest["market"],
+        "size": latest["size"],
+        "avg_price": round(avg_price, 2),
+        "trend": trend
+    }
 
         
 @app.route("/")
