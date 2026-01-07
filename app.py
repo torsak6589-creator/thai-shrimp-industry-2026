@@ -1,28 +1,27 @@
 from flask import Flask, render_template, jsonify
 import requests, json, os
+from datetime import datetime
 
 app = Flask(__name__)
 
 GSHEET_ID = "1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es"
 GSHEET_GID = "0"
 GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid={GSHEET_GID}"
-import datetime
 
-from datetime import datetime
-
+# =========================
+# Utility
+# =========================
 def format_gsheet_date(v):
-    """
-    แปลง Date(2026,0,2) → 02-01-2026
-    """
+    """Date(2026,0,2) → 02-01-2026"""
     if isinstance(v, str) and v.startswith("Date"):
-        parts = v.replace("Date(", "").replace(")", "").split(",")
-        year = int(parts[0])
-        month = int(parts[1]) + 1   # Google Sheet เดือนเริ่มที่ 0
-        day = int(parts[2])
-        return f"{day:02d}-{month:02d}-{year}"
+        y, m, d = v.replace("Date(", "").replace(")", "").split(",")
+        return f"{int(d):02d}-{int(m)+1:02d}-{y}"
     return v
 
 
+# =========================
+# Data Layer
+# =========================
 def get_price_from_gsheet():
     r = requests.get(GSHEET_URL, timeout=15)
     text = r.text
@@ -36,25 +35,23 @@ def get_price_from_gsheet():
         if not c or len(c) < 4:
             continue
 
-        date_raw = c[0]["v"] if c[0] else None
-        price = c[3]["v"] if c[3] else None
-
-        if date_raw is None or price is None:
+        if not c[0] or not c[3]:
             continue
 
         prices.append({
-            "date": format_gsheet_date(date_raw),   # ✅ แปลงตรงนี้
+            "date": format_gsheet_date(c[0]["v"]),
             "market": c[1]["v"] if c[1] else "-",
-            "size": int(c[2]["v"]) if c[2] else "-",  # ไม่มีทศนิยม
-            "price": price
+            "size": int(c[2]["v"]) if c[2] else "-",
+            "price": c[3]["v"]
         })
 
     return prices
+
+
 def market_overview(prices):
     if not prices:
         return {}
 
-    latest = prices[-1]
     avg_price = sum(p["price"] for p in prices) / len(prices)
 
     trend = "→"
@@ -64,6 +61,8 @@ def market_overview(prices):
         elif prices[-1]["price"] < prices[-2]["price"]:
             trend = "↓"
 
+    latest = prices[-1]
+
     return {
         "date": latest["date"],
         "market": latest["market"],
@@ -72,10 +71,10 @@ def market_overview(prices):
         "trend": trend
     }
 
-        
-@app.route("/")
-def dashboard():
-    return render_template("dashboard.html", prices=get_price_from_gsheet())
+
+# =========================
+# Routes
+# =========================
 @app.route("/")
 def dashboard():
     prices = get_price_from_gsheet()
@@ -87,9 +86,11 @@ def dashboard():
         overview=overview
     )
 
+
 @app.route("/api/prices")
 def api_prices():
     return jsonify(get_price_from_gsheet())
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
