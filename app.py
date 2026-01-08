@@ -36,18 +36,20 @@ def format_gsheet_date(v):
 # Data Layer (Google Sheet)
 # =========================
 def get_price_from_gsheet():
+    now = time.time()
+
+    if CACHE["data"] and now - CACHE["timestamp"] < CACHE_TTL:
+        return CACHE["data"]
+
     r = requests.get(GSHEET_URL, timeout=15)
     text = r.text
     json_str = text[text.find("{"):text.rfind("}")+1]
     data = json.loads(json_str)
 
     prices = []
-
     for row in data["table"]["rows"]:
         c = row["c"]
-        if not c or len(c) < 4:
-            continue
-        if not c[0] or not c[3]:
+        if not c or len(c) < 4 or not c[0] or not c[3]:
             continue
 
         prices.append({
@@ -57,7 +59,10 @@ def get_price_from_gsheet():
             "price": c[3]["v"]
         })
 
+    CACHE["data"] = prices
+    CACHE["timestamp"] = now
     return prices
+
 
 # =========================
 # Cache Wrapper  ✅ (NEW)
