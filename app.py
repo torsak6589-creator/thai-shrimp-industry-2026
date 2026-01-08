@@ -4,6 +4,13 @@ from datetime import datetime
 from time import time
 
 app = Flask(__name__)
+import time
+
+CACHE = {
+    "data": None,
+    "timestamp": 0
+}
+CACHE_TTL = 300  # 5 นาที
 
 # =========================
 # Google Sheet Config
