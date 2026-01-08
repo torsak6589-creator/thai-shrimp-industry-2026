@@ -127,6 +127,32 @@ def compare_last_14_days(prices):
         "pct": pct,
         "trend": trend
     }
+def executive_summary(prices, overview):
+    if not prices or not overview:
+        return ""
+
+    trend = overview["trend"]
+    avg_price = overview["avg_price"]
+
+    if trend == "↑":
+        level = "ตลาดร้อนแรง"
+        decision = "ชะลอการซื้อ และควบคุมต้นทุน"
+        note = "ราคาเร่งตัวต่อเนื่อง"
+    elif trend == "↓":
+        level = "ตลาดผ่อนคลาย"
+        decision = "สามารถทยอยเข้าซื้อ"
+        note = "ราคาอ่อนตัวลง"
+    else:
+        level = "ตลาดทรงตัว"
+        decision = "ซื้อแบบระมัดระวัง"
+        note = "ราคาแกว่งตัวในกรอบแคบ"
+
+    return f"""
+ตลาดกุ้งล่าสุดอยู่ในภาวะ <strong>{level}</strong> 
+ราคาเฉลี่ยประมาณ <strong>{avg_price} บาท/กก.</strong> 
+แนวโน้ม {note} แนะนำให้ <strong>{decision}</strong>
+เพื่อบริหารความเสี่ยงด้านต้นทุนในระยะสั้น
+"""
 
 # =========================
 # Routes
