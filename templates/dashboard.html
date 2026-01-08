@@ -129,24 +129,28 @@
     {% endif %}
 
     <!-- ===== RAW DATA TABLE ===== -->
-    <h2 style="margin-top:30px;">ข้อมูลราคากุ้ง</h2>
+    <h2 style="margin-top:30px;">ข้อมูลราคากุ้ง (Google Sheet)</h2>
 
-    <table>
-        <thead>
-            <tr>
-                <th>วันที่</th>
-                <th>ราคา</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in prices %}
-            <tr>
-                <td>{{ row.date }}</td>
-                <td>{{ row.price }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table>
+  <thead>
+    <tr>
+      <th>วันที่</th>
+      <th>ตลาด</th>
+      <th>ไซซ์</th>
+      <th>ราคา (บาท/กก.)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in prices %}
+    <tr>
+      <td>{{ row.date }}</td>
+      <td>{{ row.market }}</td>
+      <td>{{ row.size }}</td>
+      <td>{{ row.price }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 </body>
 </html>
