@@ -1,91 +1,71 @@
 from flask import Flask, render_template, jsonify
 import requests, json, os
-from datetime import datetime
 from time import time
 
 app = Flask(__name__)
-import time
 
+# =========================
+# Cache Config
+# =========================
+CACHE_TTL = 300  # 5 นาที
 CACHE = {
     "data": None,
     "timestamp": 0
 }
-CACHE_TTL = 300  # 5 นาที
 
 # =========================
 # Google Sheet Config
 # =========================
 GSHEET_ID = "1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es"
 GSHEET_GID = "0"
-GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid={GSHEET_GID}"
-
-# =========================
-# Cache Config  ✅ (NEW)
-# =========================
-CACHE_TTL = 300  # วินาที (5 นาที)
-
-CACHE = {
-    "prices": None,
-    "timestamp": 0
-}
+GSHEET_URL = (
+    f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq"
+    f"?tqx=out:json&gid={GSHEET_GID}"
+)
 
 # =========================
 # Utility
 # =========================
 def format_gsheet_date(v):
-    """Date(2026,0,2) → 02-01-2026"""
     if isinstance(v, str) and v.startswith("Date"):
         y, m, d = v.replace("Date(", "").replace(")", "").split(",")
         return f"{int(d):02d}-{int(m)+1:02d}-{y}"
-    return v
+    return v or "-"
 
 # =========================
-# Data Layer (Google Sheet)
+# Data Layer (with cache)
 # =========================
-def get_price_from_gsheet():
-    now = time.time()
+def get_prices():
+    now = time()
 
     if CACHE["data"] and now - CACHE["timestamp"] < CACHE_TTL:
         return CACHE["data"]
 
-    r = requests.get(GSHEET_URL, timeout=15)
-    text = r.text
-    json_str = text[text.find("{"):text.rfind("}")+1]
-    data = json.loads(json_str)
+    try:
+        r = requests.get(GSHEET_URL, timeout=10)
+        text = r.text
+        json_str = text[text.find("{"):text.rfind("}")+1]
+        data = json.loads(json_str)
 
-    prices = []
-    for row in data["table"]["rows"]:
-        c = row["c"]
-        if not c or len(c) < 4 or not c[0] or not c[3]:
-            continue
+        prices = []
+        for row in data["table"]["rows"]:
+            c = row["c"]
+            if not c or not c[0] or not c[3]:
+                continue
 
-        prices.append({
-            "date": format_gsheet_date(c[0]["v"]),
-            "market": c[1]["v"] if c[1] else "-",
-            "size": int(c[2]["v"]) if c[2] else "-",
-            "price": c[3]["v"]
-        })
+            prices.append({
+                "date": format_gsheet_date(c[0]["v"]),
+                "market": c[1]["v"] if c[1] else "-",
+                "size": int(c[2]["v"]) if c[2] else "-",
+                "price": float(c[3]["v"])
+            })
 
-    CACHE["data"] = prices
-    CACHE["timestamp"] = now
-    return prices
+        CACHE["data"] = prices
+        CACHE["timestamp"] = now
+        return prices
 
-
-# =========================
-# Cache Wrapper  ✅ (NEW)
-# =========================
-def get_cached_prices():
-    now = time()
-
-    # ใช้ cache ถ้ายังไม่หมดอายุ
-    if CACHE["prices"] and (now - CACHE["timestamp"] < CACHE_TTL):
-        return CACHE["prices"]
-
-    # ดึงใหม่
-    prices = get_price_from_gsheet()
-    CACHE["prices"] = prices
-    CACHE["timestamp"] = now
-    return prices
+    except Exception:
+        return CACHE["data"] or []
 
 # =========================
 # Business Logic
@@ -94,7 +74,8 @@ def market_overview(prices):
     if not prices:
         return {}
 
-    avg_price = sum(p["price"] for p in prices) / len(prices)
+    avg_price = round(sum(p["price"] for p in prices) / len(prices), 2)
+    latest = prices[-1]
 
     trend = "→"
     if len(prices) >= 2:
@@ -103,13 +84,11 @@ def market_overview(prices):
         elif prices[-1]["price"] < prices[-2]["price"]:
             trend = "↓"
 
-    latest = prices[-1]
-
     return {
         "date": latest["date"],
         "market": latest["market"],
         "size": latest["size"],
-        "avg_price": round(avg_price, 2),
+        "avg_price": avg_price,
         "trend": trend
     }
 
@@ -126,11 +105,7 @@ def compare_last_14_days(prices):
     diff = round(avg_last - avg_prev, 2)
     pct = round((diff / avg_prev) * 100, 2) if avg_prev else 0
 
-    trend = "→"
-    if diff > 0:
-        trend = "↑"
-    elif diff < 0:
-        trend = "↓"
+    trend = "↑" if diff > 0 else "↓" if diff < 0 else "→"
 
     return {
         "avg_last_7": round(avg_last, 2),
@@ -139,57 +114,58 @@ def compare_last_14_days(prices):
         "pct": pct,
         "trend": trend
     }
-def executive_summary(prices, overview):
-    if not prices or not overview:
+
+def executive_summary(overview):
+    if not overview:
         return ""
 
-    trend = overview["trend"]
-    avg_price = overview["avg_price"]
-
-    if trend == "↑":
+    if overview["trend"] == "↑":
         level = "ตลาดร้อนแรง"
-        decision = "ชะลอการซื้อ และควบคุมต้นทุน"
-        note = "ราคาเร่งตัวต่อเนื่อง"
-    elif trend == "↓":
+        decision = "ชะลอการซื้อ"
+        note = "ราคาเร่งตัว"
+    elif overview["trend"] == "↓":
         level = "ตลาดผ่อนคลาย"
-        decision = "สามารถทยอยเข้าซื้อ"
-        note = "ราคาอ่อนตัวลง"
+        decision = "ทยอยเข้าซื้อ"
+        note = "ราคาอ่อนตัว"
     else:
         level = "ตลาดทรงตัว"
-        decision = "ซื้อแบบระมัดระวัง"
-        note = "ราคาแกว่งตัวในกรอบแคบ"
+        decision = "ซื้ออย่างระมัดระวัง"
+        note = "ราคาแกว่งในกรอบแคบ"
 
     return f"""
-ตลาดกุ้งล่าสุดอยู่ในภาวะ <strong>{level}</strong> 
-ราคาเฉลี่ยประมาณ <strong>{avg_price} บาท/กก.</strong> 
-แนวโน้ม {note} แนะนำให้ <strong>{decision}</strong>
-เพื่อบริหารความเสี่ยงด้านต้นทุนในระยะสั้น
-"""
+    <strong>{level}</strong><br>
+    ราคาเฉลี่ย {overview["avg_price"]} บาท/กก.<br>
+    แนวโน้ม: {note}<br>
+    🚦 คำแนะนำ: <strong>{decision}</strong>
+    """
 
 # =========================
 # Routes
 # =========================
 @app.route("/")
 def dashboard():
-    prices = get_cached_prices()   # ✅ เปลี่ยนจุดนี้
+    prices = get_prices()
     overview = market_overview(prices)
     compare_7d = compare_last_14_days(prices)
+    summary = executive_summary(overview)
 
     return render_template(
         "dashboard.html",
         prices=prices,
         overview=overview,
-        compare_7d=compare_7d
+        compare_7d=compare_7d,
+        summary=summary
     )
 
 @app.route("/api/prices")
 def api_prices():
-    return jsonify(get_cached_prices())  # ✅ ใช้ cache เช่นกัน
+    return jsonify(get_prices())
 
 # =========================
 # Run
 # =========================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)
+
 
