@@ -2,259 +2,151 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Thai Shrimp Industry 2026</title>
+    <title>Shrimp Market Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #fafafa;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
             padding: 20px;
         }
-
-        h2, h3 {
-            margin-top: 24px;
+        h1 {
+            margin-bottom: 5px;
         }
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .card h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .up { color: #2e7d32; }
+        .down { color: #c62828; }
+        .neutral { color: #555; }
 
         table {
-            border-collapse: collapse;
             width: 100%;
-            margin-top: 12px;
+            border-collapse: collapse;
             background: #fff;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: center;
-        }
-
-        th {
-            background: #f2f2f2;
-        }
-
-        .overview .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .card {
-            background: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 12px;
-            text-align: center;
-        }
-
-        .insight {
-            background: #eef7ff;
-            padding: 12px 16px;
-            border-left: 4px solid #3b82f6;
             margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+        th {
+            background: #f0f0f0;
         }
     </style>
 </head>
 
 <body>
 
-<h2>🦐 Thai Shrimp Industry 2026</h2>
+    <!-- ===== HEADER ===== -->
+    <h1>Executive Shrimp Market Overview</h1>
+    <div class="subtitle">
+        ภาพรวมตลาดกุ้ง | อัปเดตล่าสุดจากข้อมูลจริง
+    </div>
 
-<!-- ===== Market Overview ===== -->
-<div class="overview">
-    <h3>Market Overview</h3>
-
-    <div class="cards">
+    <!-- ===== MARKET OVERVIEW ===== -->
+    {% if overview %}
+    <div class="grid">
         <div class="card">
-            <strong>Market</strong><br>
-            {{ overview.market }}
+            <h3>ราคาเฉลี่ยล่าสุด</h3>
+            <div class="value">{{ overview.latest_avg_price }}</div>
         </div>
 
         <div class="card">
-            <strong>Size</strong><br>
-            {{ overview.size }}
+            <h3>แนวโน้มตลาด</h3>
+            <div class="value neutral">{{ overview.market_trend }}</div>
         </div>
 
         <div class="card">
-            <strong>Avg Price</strong><br>
-            {{ overview.avg_price }} บาท/กก.
+            <h3>ความผันผวน</h3>
+            <div class="value neutral">{{ overview.volatility_level }}</div>
         </div>
 
         <div class="card">
-            <strong>Trend</strong><br>
-            {{ overview.trend }}
+            <h3>สรุปผู้บริหาร</h3>
+            <div>{{ overview.executive_summary }}</div>
         </div>
     </div>
-</div>
-def compare_last_14_days(prices):
-    """
-    เปรียบเทียบ 7 วันล่าสุด vs 7 วันก่อนหน้า
-    prices ต้องเรียงตามวันที่เก่า → ใหม่
-    """
-    if len(prices) < 14:
-        return {}
-
-    last_7 = prices[-7:]
-    prev_7 = prices[-14:-7]
-
-    avg_last_7 = sum(p["price"] for p in last_7) / len(last_7)
-    avg_prev_7 = sum(p["price"] for p in prev_7) / len(prev_7)
-
-    diff = avg_last_7 - avg_prev_7
-    pct = (diff / avg_prev_7) * 100 if avg_prev_7 != 0 else 0
-
-    trend = "→"
-    if diff > 0:
-        trend = "↑"
-    elif diff < 0:
-        trend = "↓"
-
-    return {
-        "avg_last_7": round(avg_last_7, 2),
-        "avg_prev_7": round(avg_prev_7, 2),
-        "diff": round(diff, 2),
-        "pct": round(pct, 1),
-        "trend": trend
-    }
-
-<!-- ===== Market Insight ===== -->
-<div class="insight">
-    <h3>Market Insight</h3>
-    <ul>
-        <li>ราคากุ้งเฉลี่ยอยู่ที่ {{ overview.avg_price }} บาท/กก.</li>
-        <li>แนวโน้มราคา {{ overview.trend }} เมื่อเทียบวันก่อนหน้า</li>
-        <li>ใช้ประกอบการตัดสินใจจัดซื้อระยะสั้น</li>
-    </ul>
-</div>
-
-<!-- ===== Price Table ===== -->
-<h3>📊 ราคากุ้งรายวัน (Google Sheet)</h3>
-
-<table>
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Market</th>
-            <th>Size</th>
-            <th>Price (THB/kg)</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for p in prices %}
-        <tr>
-            <td>{{ p.date }}</td>
-            <td>{{ p.market }}</td>
-            <td>{{ p.size }}</td>
-            <td>{{ p.price }}</td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="4">ไม่พบข้อมูล</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<hr style="margin:40px 0;">
-
-<section class="executive">
-  <h2>🧠 Executive Market Overview</h2>
-  <p style="color:#555;">สรุปสถานการณ์กุ้งสำหรับผู้บริหาร (1 นาทีเข้าใจ)</p>
-
-  <div class="cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:20px;">
-    
-    <div class="card">
-      <strong>Market</strong><br>
-      {{ overview.market }}
-    </div>
-
-    <div class="card">
-      <strong>Main Size</strong><br>
-      {{ overview.size }}
-    </div>
-
-    <div class="card">
-      <strong>Avg Price</strong><br>
-      {{ overview.avg_price }} บาท/กก.
-    </div>
-
-    <div class="card">
-      <strong>Trend</strong><br>
-      <span style="font-size:22px;">
-        {{ overview.trend }}
-      </span>
-    </div>
-<section class="executive" style="margin-top:40px;">
-  <h2>📆 7-Day Comparison</h2>
-  <p style="color:#555;">เปรียบเทียบราคาเฉลี่ย 7 วันล่าสุด vs 7 วันก่อนหน้า</p>
-
-  {% if compare_7d %}
-  <div class="cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:20px;">
-    
-    <div class="card">
-      <strong>7 วันล่าสุด</strong><br>
-      {{ compare_7d.avg_last_7 }} บาท/กก.
-    </div>
-
-    <div class="card">
-      <strong>7 วันก่อนหน้า</strong><br>
-      {{ compare_7d.avg_prev_7 }} บาท/กก.
-    </div>
-
-    <div class="card">
-      <strong>เปลี่ยนแปลง</strong><br>
-      {{ compare_7d.diff }} บาท
-    </div>
-
-    <div class="card">
-      <strong>Trend</strong><br>
-      {{ compare_7d.trend }} ({{ compare_7d.pct }}%)
-    </div>
-
-  </div>
-
-  <div class="insight" style="margin-top:20px;">
-    <h3>📌 Executive Interpretation</h3>
-    <ul>
-      <li>ราคาเฉลี่ย 7 วันล่าสุด {{ compare_7d.trend }}
-          {{ compare_7d.pct }}%</li>
-      {% if compare_7d.trend == "↑" %}
-        <li>ต้นทุนมีแนวโน้มเพิ่ม — ควรระวังการซื้อสะสม</li>
-      {% elif compare_7d.trend == "↓" %}
-        <li>ราคาผ่อนคลาย — เป็นจังหวะพิจารณาเข้าซื้อ</li>
-      {% else %}
-        <li>ราคาแกว่งตัว — แนะนำซื้อแบบกระจายความเสี่ยง</li>
-      {% endif %}
-    </ul>
-  </div>
-  {% else %}
-    <p>ข้อมูลยังไม่ครบ 14 วัน</p>
-  {% endif %}
-</section>
-
-  </div>
-
-  <div class="insight" style="margin-top:30px;background:#f9fafb;padding:16px;border-left:5px solid #0f766e;">
-    <h3>📌 Executive Insight</h3>
-    <ul>
-      <li>ราคาเฉลี่ยอยู่ที่ <strong>{{ overview.avg_price }}</strong> บาท/กก.</li>
-      <li>แนวโน้มราคา <strong>{{ overview.trend }}</strong> เมื่อเทียบงวดก่อน</li>
-      <li>ตลาดหลักยังเป็น <strong>{{ overview.market }}</strong></li>
-      <li>เหมาะใช้ประกอบการตัดสินใจจัดซื้อระยะสั้น</li>
-    </ul>
-  </div>
-
-  <div class="decision" style="margin-top:20px;padding:16px;background:#ecfeff;">
-    <h3>🚦 Decision Signal</h3>
-    {% if overview.trend == "↑" %}
-      <p style="color:#dc2626;"><strong>🔴 ราคาเร่งตัว — ระวังการซื้อสะสม</strong></p>
-    {% elif overview.trend == "↓" %}
-      <p style="color:#16a34a;"><strong>🟢 ราคาอ่อนตัว — มีโอกาสเข้าซื้อ</strong></p>
-    {% else %}
-      <p style="color:#ca8a04;"><strong>🟡 ราคาแกว่งตัว — ซื้อแบบระมัดระวัง</strong></p>
     {% endif %}
-  </div>
 
-</section>
+    <!-- ===== 7 DAYS COMPARISON ===== -->
+    {% if compare_7d %}
+    <h2 style="margin-top:30px;">เปรียบเทียบ 7 วันล่าสุด</h2>
+
+    <div class="grid">
+        <div class="card">
+            <h3>เฉลี่ย 7 วันล่าสุด</h3>
+            <div class="value">{{ compare_7d.avg_last_7 }}</div>
+        </div>
+
+        <div class="card">
+            <h3>เฉลี่ย 7 วันก่อนหน้า</h3>
+            <div class="value">{{ compare_7d.avg_prev_7 }}</div>
+        </div>
+
+        <div class="card">
+            <h3>การเปลี่ยนแปลง</h3>
+            <div class="value
+                {% if compare_7d.diff > 0 %}up
+                {% elif compare_7d.diff < 0 %}down
+                {% else %}neutral{% endif %}
+            ">
+                {{ compare_7d.trend }} {{ compare_7d.diff }}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>คิดเป็น %</h3>
+            <div class="value neutral">{{ compare_7d.pct }}%</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ===== RAW DATA TABLE ===== -->
+    <h2 style="margin-top:30px;">ข้อมูลราคากุ้ง</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>วันที่</th>
+                <th>ราคา</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in prices %}
+            <tr>
+                <td>{{ row.date }}</td>
+                <td>{{ row.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 </body>
 </html>
-
