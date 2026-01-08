@@ -2,157 +2,72 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Shrimp Market Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <title>Dashboard ราคากุ้ง</title>
     <style>
-        body {
-            font-family: "Segoe UI", Tahoma, sans-serif;
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        h1 { margin-bottom: 5px; }
+        .summary {
             background: #f4f6f8;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            color: #666;
+            padding: 15px;
+            border-left: 5px solid #007bff;
             margin-bottom: 20px;
         }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px;
-        }
-        .card {
-            background: #fff;
-            border-radius: 10px;
-            padding: 16px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        }
-        .card h3 {
-            margin-top: 0;
-            font-size: 16px;
-            color: #333;
-        }
-        .value {
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .up { color: #2e7d32; }
-        .down { color: #c62828; }
-        .neutral { color: #555; }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #fff;
-            margin-top: 20px;
-            border-radius: 10px;
-            overflow: hidden;
+            font-size: 14px;
         }
         th, td {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            border: 1px solid #ddd;
+            padding: 8px;
             text-align: center;
         }
-        th {
-            background: #f0f0f0;
-        }
+        th { background: #eee; }
+        .trend-up { color: green; }
+        .trend-down { color: red; }
     </style>
 </head>
-
 <body>
 
-    <!-- ===== HEADER ===== -->
-    <h1>Executive Shrimp Market Overview</h1>
-    <div class="subtitle">
-        ภาพรวมตลาดกุ้ง | อัปเดตล่าสุดจากข้อมูลจริง
-    </div>
+<h1>📊 Dashboard ราคากุ้ง</h1>
+<p>อัปเดตล่าสุด: {{ overview.date }}</p>
 
-    <!-- ===== MARKET OVERVIEW ===== -->
-    {% if overview %}
-    <div class="grid">
-        <div class="card">
-            <div class="card">
-    <h3>ราคาเฉลี่ยล่าสุด</h3>
-    <div class="value">{{ overview.latest_avg_price }}</div>
+<div class="summary">
+    <h3>Executive Summary</h3>
+    {{ summary|safe }}
 </div>
 
-
-        <div class="card">
-            <h3>แนวโน้มตลาด</h3>
-            <div class="value neutral">{{ overview.market_trend }}</div>
-        </div>
-
-        <div class="card">
-            <h3>ความผันผวน</h3>
-            <div class="value neutral">{{ overview.volatility_level }}</div>
-        </div>
-
-        <div class="card">
-            <h3>สรุปผู้บริหาร</h3>
-            <div>{{ overview.executive_summary }}</div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- ===== 7 DAYS COMPARISON ===== -->
-    {% if compare_7d %}
-    <h2 style="margin-top:30px;">เปรียบเทียบ 7 วันล่าสุด</h2>
-
-    <div class="grid">
-        <div class="card">
-            <h3>เฉลี่ย 7 วันล่าสุด</h3>
-            <div class="value">{{ compare_7d.avg_last_7 }}</div>
-        </div>
-
-        <div class="card">
-            <h3>เฉลี่ย 7 วันก่อนหน้า</h3>
-            <div class="value">{{ compare_7d.avg_prev_7 }}</div>
-        </div>
-
-        <div class="card">
-            <h3>การเปลี่ยนแปลง</h3>
-            <div class="value
-                {% if compare_7d.diff > 0 %}up
-                {% elif compare_7d.diff < 0 %}down
-                {% else %}neutral{% endif %}
-            ">
-                {{ compare_7d.trend }} {{ compare_7d.diff }}
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>คิดเป็น %</h3>
-            <div class="value neutral">{{ compare_7d.pct }}%</div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- ===== RAW DATA TABLE ===== -->
-    <h2 style="margin-top:30px;">ข้อมูลราคากุ้ง (Google Sheet)</h2>
-
 <table>
-  <thead>
-    <tr>
-      <th>วันที่</th>
-      <th>ตลาด</th>
-      <th>ไซซ์</th>
-      <th>ราคา (บาท/กก.)</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in prices %}
-    <tr>
-      <td>{{ row.date }}</td>
-      <td>{{ row.market }}</td>
-      <td>{{ row.size }}</td>
-      <td>{{ row.price }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th>วันที่</th>
+            <th>ตลาด</th>
+            <th>ขนาด</th>
+            <th>ราคา (บาท/กก.)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in prices %}
+        <tr>
+            <td>{{ p.date }}</td>
+            <td>{{ p.market }}</td>
+            <td>{{ p.size }}</td>
+            <td>{{ "%.2f"|format(p.price) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
+{% if compare_7d %}
+<br>
+<h3>📈 เปรียบเทียบ 7 วันล่าสุด</h3>
+<ul>
+    <li>เฉลี่ย 7 วันล่าสุด: {{ compare_7d.avg_last_7 }} บาท</li>
+    <li>เฉลี่ย 7 วันก่อนหน้า: {{ compare_7d.avg_prev_7 }} บาท</li>
+    <li>เปลี่ยนแปลง: {{ compare_7d.diff }} บาท ({{ compare_7d.pct }}%)</li>
+</ul>
+{% endif %}
 
 </body>
 </html>
+
