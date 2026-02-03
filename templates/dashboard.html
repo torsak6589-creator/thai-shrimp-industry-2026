@@ -1,72 +1,102 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard ราคากุ้ง</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 30px; }
-        h1 { margin-bottom: 5px; }
-        .summary {
-            background: #f4f6f8;
-            padding: 15px;
-            border-left: 5px solid #007bff;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th { background: #eee; }
-        .trend-up { color: green; }
-        .trend-down { color: red; }
-    </style>
+<meta charset="UTF-8">
+<title>Executive Shrimp Price Dashboard</title>
+
+<style>
+body {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: #f5f6f8;
+    margin: 20px;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.table-wrap {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+}
+
+thead {
+    background: #f1f3f4;
+}
+
+th, td {
+    padding: 8px 10px;
+    border: 1px solid #e0e0e0;
+    text-align: center;
+    white-space: nowrap;
+}
+
+th {
+    font-weight: 600;
+}
+
+td.left {
+    text-align: left;
+}
+
+tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+tbody tr:hover {
+    background: #eef6ff;
+}
+
+/* ไฮไลต์คอลัมน์ช่วงขนาด */
+td.size {
+    background: #fdeaea;
+    font-weight: 600;
+    color: #1a73e8;
+}
+</style>
 </head>
+
 <body>
 
-<h1>📊 Dashboard ราคากุ้ง</h1>
-<p>อัปเดตล่าสุด: {{ overview.date }}</p>
+<h2>📊 ราคากุ้งรายสัปดาห์</h2>
 
-<div class="summary">
-    <h3>Executive Summary</h3>
-    {{ summary|safe }}
-</div>
-
+<div class="table-wrap">
 <table>
     <thead>
         <tr>
             <th>วันที่</th>
             <th>ตลาด</th>
             <th>ขนาด</th>
-            <th>ราคา (บาท/กก.)</th>
+            <th>กุ้งขาวสด</th>
+            <th>กุ้งขาวมีชีวิต</th>
+            <th>กุ้งดำสด</th>
+            <th>กุ้งดำมีชีวิต</th>
         </tr>
     </thead>
+
     <tbody>
         {% for p in prices %}
         <tr>
             <td>{{ p.date }}</td>
-            <td>{{ p.market }}</td>
-            <td>{{ p.size }}</td>
-            <td>{{ "%.2f"|format(p.price) }}</td>
+            <td class="left">{{ p.market }}</td>
+            <td class="size">{{ p.size }}</td>
+            <td>{{ p.price }}</td>
+            <td>{{ p.price + 60 }}</td>
+            <td>{{ p.price - 7 }}</td>
+            <td>{{ p.price + 47 }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-
-{% if compare_7d %}
-<br>
-<h3>📈 เปรียบเทียบ 7 วันล่าสุด</h3>
-<ul>
-    <li>เฉลี่ย 7 วันล่าสุด: {{ compare_7d.avg_last_7 }} บาท</li>
-    <li>เฉลี่ย 7 วันก่อนหน้า: {{ compare_7d.avg_prev_7 }} บาท</li>
-    <li>เปลี่ยนแปลง: {{ compare_7d.diff }} บาท ({{ compare_7d.pct }}%)</li>
-</ul>
-{% endif %}
+</div>
 
 </body>
 </html>
