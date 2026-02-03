@@ -48,23 +48,29 @@ def get_prices():
         data = json.loads(json_str)
 
         prices = []
+
         for row in data["table"]["rows"]:
             c = row["c"]
-            if not c or not c[0] or not c[3]:
+            if not c or len(c) < 8:
                 continue
 
             prices.append({
-                "date": format_gsheet_date(c[0]["v"]),
-                "market": c[1]["v"] if c[1] else "-",
-                "size": int(c[2]["v"]) if c[2] else "-",
-                "price": float(c[3]["v"])
+                "month": c[0]["v"] if c[0] else "-",
+                "week": c[1]["v"] if c[1] else "-",
+                "period": c[2]["v"] if c[2] else "-",
+                "size": c[3]["v"] if c[3] else "-",
+                "white_fresh": c[4]["v"] if c[4] else "-",
+                "white_live": c[5]["v"] if c[5] else "-",
+                "black_fresh": c[6]["v"] if c[6] else "-",
+                "black_live": c[7]["v"] if c[7] else "-",
             })
 
         CACHE["data"] = prices
         CACHE["timestamp"] = now
         return prices
 
-    except Exception:
+    except Exception as e:
+        print("GSHEET ERROR:", e)
         return CACHE["data"] or []
 
 # =========================
