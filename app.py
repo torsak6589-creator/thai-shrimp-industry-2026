@@ -5,23 +5,17 @@ from time import time
 app = Flask(__name__)
 
 # =========================
-# Cache Config
+# Cache
 # =========================
-CACHE_TTL = 300  # 5 นาที
-CACHE = {
-    "data": None,
-    "timestamp": 0
-}
+CACHE_TTL = 300
+CACHE = {"data": None, "timestamp": 0}
 
 # =========================
 # Google Sheet Config
 # =========================
 GSHEET_ID = "1z8sWAjtDtdMNxqS41QejImOXBmPQtEszRP249ewf5es"
 GSHEET_GID = "0"
-GSHEET_URL = (
-    f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq"
-    f"?tqx=out:json&gid={GSHEET_GID}"
-)
+GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{GSHEET_ID}/gviz/tq?tqx=out:json&gid={GSHEET_GID}"
 
 # =========================
 # Utility
@@ -33,7 +27,7 @@ def format_gsheet_date(v):
     return v or "-"
 
 # =========================
-# Data Layer (with cache)
+# Load Data
 # =========================
 def get_prices():
     now = time()
@@ -48,21 +42,16 @@ def get_prices():
         data = json.loads(json_str)
 
         prices = []
-
         for row in data["table"]["rows"]:
             c = row["c"]
-            if not c or len(c) < 8:
+            if not c or not c[0] or not c[3]:
                 continue
 
             prices.append({
-                "month": c[0]["v"] if c[0] else "-",
-                "week": c[1]["v"] if c[1] else "-",
-                "period": c[2]["v"] if c[2] else "-",
-                "size": c[3]["v"] if c[3] else "-",
-                "white_fresh": c[4]["v"] if c[4] else "-",
-                "white_live": c[5]["v"] if c[5] else "-",
-                "black_fresh": c[6]["v"] if c[6] else "-",
-                "black_live": c[7]["v"] if c[7] else "-",
+                "date": format_gsheet_date(c[0]["v"]),
+                "market": c[1]["v"] if c[1] else "-",
+                "size": c[2]["v"] if c[2] else "-",
+                "price": float(c[3]["v"])
             })
 
         CACHE["data"] = prices
@@ -74,17 +63,17 @@ def get_prices():
         return CACHE["data"] or []
 
 # =========================
-# Business Logic
+# Analytics
 # =========================
 def market_overview(prices):
     if not prices:
-        return {}
+        return {"date":"-", "market":"-", "size":"-", "avg_price":0, "trend":"→"}
 
     avg_price = round(sum(p["price"] for p in prices) / len(prices), 2)
     latest = prices[-1]
 
     trend = "→"
-    if len(prices) >= 2:
+    if len(prices) > 1:
         if prices[-1]["price"] > prices[-2]["price"]:
             trend = "↑"
         elif prices[-1]["price"] < prices[-2]["price"]:
@@ -100,7 +89,7 @@ def market_overview(prices):
 
 def compare_last_14_days(prices):
     if len(prices) < 14:
-        return None
+        return {"avg_last_7":0, "avg_prev_7":0, "diff":0, "pct":0, "trend":"→"}
 
     last_7 = prices[-7:]
     prev_7 = prices[-14:-7]
@@ -110,7 +99,6 @@ def compare_last_14_days(prices):
 
     diff = round(avg_last - avg_prev, 2)
     pct = round((diff / avg_prev) * 100, 2) if avg_prev else 0
-
     trend = "↑" if diff > 0 else "↓" if diff < 0 else "→"
 
     return {
@@ -122,9 +110,6 @@ def compare_last_14_days(prices):
     }
 
 def executive_summary(overview):
-    if not overview:
-        return ""
-
     if overview["trend"] == "↑":
         level = "ตลาดร้อนแรง"
         decision = "ชะลอการซื้อ"
@@ -138,12 +123,7 @@ def executive_summary(overview):
         decision = "ซื้ออย่างระมัดระวัง"
         note = "ราคาแกว่งในกรอบแคบ"
 
-    return f"""
-    <strong>{level}</strong><br>
-    ราคาเฉลี่ย {overview["avg_price"]} บาท/กก.<br>
-    แนวโน้ม: {note}<br>
-    🚦 คำแนะนำ: <strong>{decision}</strong>
-    """
+    return f"{level} | ราคาเฉลี่ย {overview['avg_price']} บาท/กก. | แนวโน้ม {note} | คำแนะนำ: {decision}"
 
 # =========================
 # Routes
@@ -157,7 +137,7 @@ def dashboard():
 
     return render_template(
         "dashboard.html",
-        prices=prices,
+        prices=prices or [],
         overview=overview,
         compare_7d=compare_7d,
         summary=summary
@@ -172,6 +152,4 @@ def api_prices():
 # =========================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port, debug=True)
-
-
+    app.run(host="0.0.0.0", port=port)
