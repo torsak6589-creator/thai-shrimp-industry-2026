@@ -1,190 +1,63 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <title>Market Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Shrimp Market Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont;
-            background: #f5f7fa;
-            margin: 0;
-            padding: 20px;
-            color: #222;
-        }
-        h1 {
-            margin-bottom: 5px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-        }
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 14px rgba(0,0,0,.06);
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-            gap: 16px;
-        }
-        .metric {
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .label {
-            font-size: 13px;
-            color: #666;
-        }
-        .trend-up { color: #d32f2f; }
-        .trend-down { color: #2e7d32; }
-        .trend-flat { color: #555; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            text-align: center;
-        }
-        th {
-            background: #fafafa;
-            font-size: 13px;
-            color: #555;
-        }
-        tr:hover {
-            background: #f9fbff;
-        }
-
-        .summary {
-            line-height: 1.6;
-            font-size: 15px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .hot { background:#ffe2e2; color:#c62828; }
-        .cool { background:#e3f2fd; color:#1565c0; }
-        .neutral { background:#eeeeee; color:#333; }
-
-        footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #888;
-            text-align: center;
-        }
-    </style>
+<style>
+body {font-family:Segoe UI;background:#f4f6f8;padding:20px}
+.grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
+.card {background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.value {font-size:26px;font-weight:bold}
+table {width:100%;border-collapse:collapse;background:#fff;margin-top:20px}
+th,td {padding:8px;border-bottom:1px solid #eee;text-align:center}
+th {background:#eee}
+</style>
 </head>
 
 <body>
-<div class="container">
 
-    <h1>📊 Market Dashboard</h1>
-    <div class="label">อัปเดตล่าสุด: {{ overview.date if overview }}</div>
+<h1>Executive Shrimp Market Overview</h1>
+<p>{{ summary }}</p>
 
-    <!-- OVERVIEW -->
-    <div class="card grid">
-        <div>
-            <div class="label">ตลาด</div>
-            <div class="metric">{{ overview.market if overview }}</div>
-        </div>
-        <div>
-            <div class="label">ไซส์</div>
-            <div class="metric">{{ overview.size if overview }}</div>
-        </div>
-        <div>
-            <div class="label">ราคาเฉลี่ย</div>
-            <div class="metric">{{ overview.avg_price if overview }} ฿</div>
-        </div>
-        <div>
-            <div class="label">แนวโน้ม</div>
-            {% if overview.trend == "↑" %}
-                <div class="metric trend-up">↑ ขาขึ้น</div>
-            {% elif overview.trend == "↓" %}
-                <div class="metric trend-down">↓ อ่อนตัว</div>
-            {% else %}
-                <div class="metric trend-flat">→ ทรงตัว</div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- EXECUTIVE SUMMARY -->
-    <div class="card">
-        <h3>🧠 Executive Summary</h3>
-        <div class="summary">
-            {{ summary|safe }}
-        </div>
-    </div>
-
-    <!-- 7 vs 7 -->
-    {% if compare_7d %}
-    <div class="card grid">
-        <div>
-            <div class="label">เฉลี่ย 7 วันล่าสุด</div>
-            <div class="metric">{{ compare_7d.avg_last_7 }} ฿</div>
-        </div>
-        <div>
-            <div class="label">7 วันก่อนหน้า</div>
-            <div class="metric">{{ compare_7d.avg_prev_7 }} ฿</div>
-        </div>
-        <div>
-            <div class="label">ส่วนต่าง</div>
-            <div class="metric">
-                {{ compare_7d.diff }} ฿
-                ({{ compare_7d.pct }}%)
-            </div>
-        </div>
-        <div>
-            <div class="label">สัญญาณ</div>
-            <div class="metric">
-                {{ compare_7d.trend }}
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- TABLE -->
-    <div class="card">
-        <h3>📋 ตารางราคาล่าสุด</h3>
-        <table>
-            <thead>
-            <tr>
-                <th>วันที่</th>
-                <th>ตลาด</th>
-                <th>ไซส์</th>
-                <th>ราคา (บาท)</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for p in prices %}
-                <tr>
-                    <td>{{ p.date }}</td>
-                    <td>{{ p.market }}</td>
-                    <td>{{ p.size }}</td>
-                    <td>{{ "%.2f"|format(p.price) }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <footer>
-        ⚡ Cached 5 นาที | Data Source: Google Sheet
-    </footer>
-
+<div class="grid">
+<div class="card">Avg Price<div class="value">{{ overview.avg_price }}</div></div>
+<div class="card">Trend<div class="value">{{ overview.trend }}</div></div>
+<div class="card">Market<div class="value">{{ overview.market }}</div></div>
+<div class="card">Size<div class="value">{{ overview.size }}</div></div>
 </div>
+
+<h2>7-Day Comparison</h2>
+<div class="grid">
+<div class="card">Last 7 Avg<div class="value">{{ compare_7d.avg_last_7 }}</div></div>
+<div class="card">Prev 7 Avg<div class="value">{{ compare_7d.avg_prev_7 }}</div></div>
+<div class="card">Diff<div class="value">{{ compare_7d.diff }}</div></div>
+<div class="card">% Change<div class="value">{{ compare_7d.pct }}%</div></div>
+</div>
+
+<h2>Raw Google Sheet Data</h2>
+<table>
+<thead>
+<tr>
+<th>Date</th><th>Market</th><th>Size</th><th>Price</th>
+</tr>
+</thead>
+<tbody>
+{% if prices %}
+{% for p in prices %}
+<tr>
+<td>{{ p.date }}</td>
+<td>{{ p.market }}</td>
+<td>{{ p.size }}</td>
+<td>{{ p.price }}</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr><td colspan="4">No Data Found</td></tr>
+{% endif %}
+</tbody>
+</table>
+
 </body>
 </html>
-
