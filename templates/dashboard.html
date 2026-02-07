@@ -1,63 +1,55 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Shrimp Market Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta charset="utf-8">
+<title>Shrimp Price Dashboard</title>
 <style>
-body {font-family:Segoe UI;background:#f4f6f8;padding:20px}
-.grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
-.card {background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
-.value {font-size:26px;font-weight:bold}
-table {width:100%;border-collapse:collapse;background:#fff;margin-top:20px}
-th,td {padding:8px;border-bottom:1px solid #eee;text-align:center}
-th {background:#eee}
+body { font-family: Arial; padding: 20px; background:#f5f5f5;}
+table { border-collapse: collapse; width: 100%; background:white;}
+th, td { border:1px solid #ccc; padding:8px; text-align:center;}
+th { background:#222; color:white;}
+tr:nth-child(even){background:#f9f9f9;}
 </style>
 </head>
 
 <body>
-
-<h1>Executive Shrimp Market Overview</h1>
-<p>{{ summary }}</p>
-
-<div class="grid">
-<div class="card">Avg Price<div class="value">{{ overview.avg_price }}</div></div>
-<div class="card">Trend<div class="value">{{ overview.trend }}</div></div>
-<div class="card">Market<div class="value">{{ overview.market }}</div></div>
-<div class="card">Size<div class="value">{{ overview.size }}</div></div>
-</div>
-
-<h2>7-Day Comparison</h2>
-<div class="grid">
-<div class="card">Last 7 Avg<div class="value">{{ compare_7d.avg_last_7 }}</div></div>
-<div class="card">Prev 7 Avg<div class="value">{{ compare_7d.avg_prev_7 }}</div></div>
-<div class="card">Diff<div class="value">{{ compare_7d.diff }}</div></div>
-<div class="card">% Change<div class="value">{{ compare_7d.pct }}%</div></div>
-</div>
-
-<h2>Raw Google Sheet Data</h2>
-<table>
+<h2>📊 ราคากุ้งรายสัปดาห์</h2>
+<table id="tbl">
 <thead>
 <tr>
-<th>Date</th><th>Market</th><th>Size</th><th>Price</th>
+<th>เดือน</th>
+<th>สัปดาห์</th>
+<th>ช่วงวันที่</th>
+<th>ขนาด</th>
+<th>กุ้งขาวสด</th>
+<th>กุ้งขาวมีชีวิต</th>
+<th>กุ้งดำสด</th>
+<th>กุ้งดำมีชีวิต</th>
 </tr>
 </thead>
-<tbody>
-{% if prices %}
-{% for p in prices %}
-<tr>
-<td>{{ p.date }}</td>
-<td>{{ p.market }}</td>
-<td>{{ p.size }}</td>
-<td>{{ p.price }}</td>
-</tr>
-{% endfor %}
-{% else %}
-<tr><td colspan="4">No Data Found</td></tr>
-{% endif %}
-</tbody>
+<tbody></tbody>
 </table>
 
+<script>
+fetch("/api/data")
+.then(r=>r.json())
+.then(data=>{
+    let tb = document.querySelector("#tbl tbody");
+    data.forEach(d=>{
+        let tr = document.createElement("tr");
+        tr.innerHTML = `
+        <td>${d.เดือน}</td>
+        <td>${d.สัปดาห์}</td>
+        <td>${d.ช่วงวันที่}</td>
+        <td><b>${d.ขนาด}</b></td>
+        <td>${d.กุ้งขาวสด}</td>
+        <td>${d.กุ้งขาวมีชีวิต}</td>
+        <td>${d.กุ้งดำสด}</td>
+        <td>${d.กุ้งดำมีชีวิต}</td>
+        `;
+        tb.appendChild(tr);
+    });
+});
+</script>
 </body>
 </html>
