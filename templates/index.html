@@ -2,15 +2,256 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Thai Shrimp Industry 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Operation Report - Feb 2026</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e67e22;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+        .card i { font-size: 2em; color: var(--secondary-color); margin-bottom: 10px; }
+        .card h3 { margin: 10px 0; font-size: 1.1em; color: #7f8c8d; }
+        .card .value { font-size: 1.8em; font-weight: bold; color: var(--primary-color); }
+        .card .unit { font-size: 0.9em; color: #95a5a6; }
+
+        .section {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            border-left: 5px solid var(--accent-color);
+            padding-left: 15px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th { background-color: #f8f9fa; color: var(--primary-color); }
+        tr:hover { background-color: #f1f4f6; }
+
+        .fx-info {
+            background-color: #fff3e0;
+            border: 1px solid #ffe0b2;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .tag-down { background-color: #ffebee; color: #c62828; }
+        .tag-stable { background-color: #e8f5e9; color: #2e7d32; }
+
+        footer {
+            text-align: center;
+            color: #95a5a6;
+            margin-top: 50px;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
-<body style="font-family:Arial;padding:40px;background:#F0F5F9">
-    <h1>Thai Shrimp Industry 2026</h1>
-    <p style="color:#666;margin-top:8px">ระบบวิเคราะห์อุตสาหกรรมกุ้งไทย ปี 2026</p>
-    <a href="/dashboard" style="display:inline-block;margin-top:20px;padding:10px 24px;
-       background:#065A82;color:white;border-radius:6px;text-decoration:none">
-      📊 เปิด Dashboard ราคากุ้ง
-    </a>
+<body>
+
+<div class="container">
+    <header>
+        <h1>รายงานสรุปการดำเนินงาน ประจำเดือนกุมภาพันธ์ 2026</h1>
+        <p>Monthly Operation Report (FX Adjusted: 31.20 ฿/USD)</p>
+    </header>
+
+    <div class="summary-grid">
+        <div class="card">
+            <i class="fas fa-weight-hanging"></i>
+            <h3>น้ำหนักซื้อรวม</h3>
+            <div class="value">431,799</div>
+            <div class="unit">กิโลกรัม (KG)</div>
+        </div>
+        <div class="card">
+            <i class="fas fa-boxes"></i>
+            <h3>น้ำหนักผลิตรวม</h3>
+            <div class="value">400,239</div>
+            <div class="unit">กิโลกรัม (KG)</div>
+        </div>
+        <div class="card">
+            <i class="fas fa-chart-line"></i>
+            <h3>มูลค่าผลิต (Adjusted)</h3>
+            <div class="value">88.20</div>
+            <div class="unit">ล้านบาท (MB)</div>
+        </div>
+        <div class="card">
+            <i class="fas fa-tractor"></i>
+            <h3>จำนวนฟาร์ม</h3>
+            <div class="value">83</div>
+            <div class="unit">ฟาร์มที่คู่ค้า</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title"><i class="fas fa-exchange-alt"></i> ข้อมูลอัตราแลกเปลี่ยน (FX Impact)</h2>
+        <div class="fx-info">
+            <i class="fas fa-info-circle" style="color: #e67e22; font-size: 1.5em;"></i>
+            <div>
+                เนื่องจากค่าเงินบาทแข็งค่าขึ้นจาก <strong>32.00</strong> เป็น <strong>31.20 ฿/USD</strong> 
+                บริษัทได้ทำการปรับราคาขายลง <span class="tag tag-down">-2.5%</span> (ตัวคูณ 0.9750) 
+                ขณะที่ราคาซื้อวัตถุดิบยังคงจ่ายเป็น <span class="tag tag-stable">บาทจริง (คงที่)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title"><i class="fas fa-shrimp"></i> สรุปการซื้อวัตถุดิบแยกตามชนิด</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ชนิดกุ้ง</th>
+                    <th>น้ำหนัก (กก.)</th>
+                    <th>สัดส่วน</th>
+                    <th>ราคาเฉลี่ย (฿/กก.)</th>
+                    <th>ขนาด (ตัว/กก.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>กุ้งขาว</td>
+                    <td>376,383</td>
+                    <td>87.2%</td>
+                    <td>183.56</td>
+                    <td>55.0</td>
+                </tr>
+                <tr>
+                    <td>กุ้งกุลาดำ</td>
+                    <td>55,161</td>
+                    <td>12.8%</td>
+                    <td>184.08</td>
+                    <td>45.2</td>
+                </tr>
+                <tr>
+                    <td>กุ้งทะเล</td>
+                    <td>255</td>
+                    <td>0.1%</td>
+                    <td>193.24</td>
+                    <td>143.4</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title"><i class="fas fa-tags"></i> ตัวอย่างราคาขายสินค้าที่ปรับปรุงแล้ว (USD-B)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>กลุ่มสินค้า</th>
+                    <th>คำจำกัดความ</th>
+                    <th>ราคาเดิม (32.0)</th>
+                    <th>ราคาใหม่ (31.2)</th>
+                    <th>การเปลี่ยนแปลง</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>CHO-A</td>
+                    <td>กุ้งเป็นต้ม เกรด A</td>
+                    <td>279.58</td>
+                    <td>272.59</td>
+                    <td style="color: red;">-2.5%</td>
+                </tr>
+                <tr>
+                    <td>PD-A</td>
+                    <td>กุ้งเนื้อแช่ยา เกรด A</td>
+                    <td>304.01</td>
+                    <td>296.41</td>
+                    <td style="color: red;">-2.5%</td>
+                </tr>
+                <tr>
+                    <td>PCD-A</td>
+                    <td>กุ้งเนื้อต้ม เกรด A</td>
+                    <td>360.06</td>
+                    <td>351.06</td>
+                    <td style="color: red;">-2.5%</td>
+                </tr>
+                <tr>
+                    <td>RHO-NO</td>
+                    <td>กุ้งสดหักหัว (Non-Order)</td>
+                    <td>650.00</td>
+                    <td>633.75</td>
+                    <td style="color: red;">-2.5%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>© 2026 KST Dashboard | ข้อมูลอ้างอิงจากระบบ Power BI และไฟล์สรุปประจำเดือน กุมภาพันธ์</p>
+    </footer>
+</div>
+
 </body>
 </html>
